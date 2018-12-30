@@ -1,0 +1,20 @@
+version: '2.1'
+services:
+  mysql:
+    build: ./mysql
+    volumes:
+      - ${HOME}/data:/var/lib/mysql
+    healthcheck:
+      test: mysql -e "SHOW TABLES;" -uAdmin -pAdmin Database
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  php:
+    build: ./php
+    ports:
+      - '443:443'
+    volumes:
+      - ../src:/var/www/html
+    depends_on:
+      mysql:
+        condition: service_healthy
