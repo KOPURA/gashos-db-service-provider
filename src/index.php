@@ -1,5 +1,15 @@
-<?php
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Database Service Provider</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Christopher Mitov">
 
-require "/root/AWS/aws-autoloader.php";
+</head>
 
-?>
+<body>
+    <div id="content">
+        pesho
+    </div>
+</body>
+</html>

@@ -11,4 +11,4 @@ pushd Docker > /dev/null
 
 docker-compose up -d
 
-popd
+popd > /dev/null
