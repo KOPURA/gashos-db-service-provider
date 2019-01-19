@@ -2,9 +2,8 @@
 
 include 'API/IRestHandler.php';
 include 'HTTP/Request.php';
-include 'HTTP/Response.php';
 include 'HTTP/Header.php';
-include 'Helpers/Session/LoginManager.php';
+include 'Helpers/Session/SessionManager.php';
 
 
 abstract class AbstractRestHandler implements IRestHandler {
@@ -19,38 +18,65 @@ abstract class AbstractRestHandler implements IRestHandler {
         $this->errors = array();
     }
 
-    public function requiresAuthentication(): boolean {
+    public function requiresAuthentication(): bool {
         return false;
     }
 
     public function respond(): Response {
-        $isUserLogged = LoginManager::getInstance()->isUserLogged();
+        $isUserLogged = SessionManager::getInstance()->isUserLogged();
         if ($this->requiresAuthentication() && !$isUserLogged) {
             $this->handleUnauthenticatedRequest();
+        } elseif(!$this->validateParams()) {
+            $this->handleValidationError();
         } else {
             $this->processRequest();
         }
 
         $responseCode    = $this->getResponseCode();
         $responseHeaders = $this->getResponseHeaders();
-        $responseBody    = json_encode($this->getResponseStructure());
+        $responseBody    = json_encode($this->getResponseObject());
         return new Response($responseCode, $responseHeaders, $responseBody); 
     }
 
 # ---------------- Protected Methods --------------------------------------
 
+# Each handler defines what its behaviour will be
     protected abstract function process();
 
-    protected function getResponseStructure() {
-        if (!$this->isSuccess()) {
-            return array(
-                "errors" => $this->getErrors(); 
-            );
-        }
-        return ((object)[]);
+# Each handler defines how a given parameter is being retrieved
+    protected abstract function getParam($key);
+
+
+    protected function getParamKeys() {
+        return [];
     }
 
-    protected function isSuccess(): boolean {
+    protected function getResponseResult() {
+        return array();
+    }
+
+    protected function validateParams() {
+        $result = True;
+        foreach ($this->getParamKeys() as $key) {
+            $checkerName = "check".$key;
+            if (method_exists($this, $checkerName)) {
+                $value = $this->getParam($key);
+                $rc = $this->$checkerName($value) && $rc;
+            }
+        }
+        return $result;
+    }
+
+    protected function getResponseObject() {
+        if (!$this->isSuccess()) {
+            return array(
+                "errors" => $this->getErrors(),
+            );
+        }
+        return $this->getResponseResult();
+    }
+
+    protected function isSuccess(): bool {
         $responseCode = $this->getResponseCode();
         return $responseCode >= 200 && $responseCode < 300;
     }
@@ -58,6 +84,11 @@ abstract class AbstractRestHandler implements IRestHandler {
     protected function handleUnauthenticatedRequest() {
         $this->setResponseCode(401);
         $this->addError('User not logged-in');
+    }
+
+    protected function handleValidationError() {
+        $this->setResponseCode(400);
+        $this->addError('Failed to validate input data');
     }
 
     protected function processRequest() {
@@ -81,8 +112,15 @@ abstract class AbstractRestHandler implements IRestHandler {
         return [ new Header("Content-Type", "application/json") ];
     }
 
-    protected function addError($error) {
-        array_push($this->errors, $error);
+    protected function addError($error, $section = null) {
+        if ($section) {
+            if (!isset($this->errors[$section])) {
+                $this->errors[$section] = array();
+            }
+            array_push($this->errors[$section], $error);
+        } else {
+            array_push($this->errors, $error);        
+        }
     }
 
     protected function getErrors() {

@@ -5,7 +5,7 @@ class Response {
     private $responseCode;
     private $responseBody;
  
-    public function __construct($responseCode, $responseBody, array $headers = []) {
+    public function __construct($responseCode, array $headers = [], $responseBody) {
         $this->responseHeaders = array();
         foreach($headers as $header) {
             $this->addHeader($header);

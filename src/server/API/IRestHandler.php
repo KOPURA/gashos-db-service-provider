@@ -2,7 +2,7 @@
 
 include 'HTTP/Response.php';
 
-interface RestHandler {
+interface IRestHandler {
 
     public function respond(): Response;
 }

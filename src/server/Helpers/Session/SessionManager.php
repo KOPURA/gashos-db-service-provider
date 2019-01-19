@@ -6,7 +6,7 @@ class SessionManager {
     
     private static $instance;
 
-    private static function getInstance(): SessionManager {
+    public static function getInstance(): SessionManager {
         if (self::$instance == null) {
             self::$instance = new SessionManager();
         }
@@ -16,7 +16,7 @@ class SessionManager {
     # ---------------------------------------------------------------
     private $SESS_KEY = 'user_id';
 
-    public function isUserLogged(): boolean {
+    public function isUserLogged(): bool {
         return isset($_SESSION[$SESS_KEY]) && !empty($_SESSION[$SESS_KEY]);
     }
 }

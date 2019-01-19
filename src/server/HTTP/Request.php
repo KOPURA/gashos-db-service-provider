@@ -5,12 +5,14 @@ class Request {
     private $requestPath;
     private $requestURL;
     private $userAgent;
+    private $payload;
 
     public function __construct($cgiInfo) {
         $this->requestMethod    = $cgiInfo['REQUEST_METHOD'];
         $this->requestPath      = $cgiInfo['REQUEST_URI'];
         $this->requestURL       = $this->buildRequestURL($cgiInfo);
         $this->userAgent        = $cgiInfo['HTTP_USER_AGENT'];
+        $this->payload          = null;
     }
 
     protected function buildRequestURL($cgiInfo) {
@@ -34,6 +36,13 @@ class Request {
 
     public function getUserAgent() {
         return $this->userAgent;
+    }
+
+    public function getJSONPayload() {
+        if (!$this->payload) {
+            $this->payload = json_decode(file_get_contents('php://input'));
+        }
+        return $this->payload;
     }
 }
 
