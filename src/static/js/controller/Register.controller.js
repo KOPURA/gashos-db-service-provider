@@ -6,10 +6,12 @@ sap.ui.controller('gashos.dbaas.provider.controller.Register', {
     },
 
     registerUser: function() {
+        var that = this;
         var oView = this.getView();
-        var oUnameField = oView.byId('uname');
-        var oPwdField   = oView.byId('pwd');
-        var oPwdConfirmField = oView.byId('confirm_pwd');
+        var oUnameField = oView.byId('Username');
+        var oPwdField   = oView.byId('Password');
+        var oPwdConfirmField = oView.byId('ConfirmPassword');
+        oView.reset(true);
 
         if (!this.passwordsMatch(oPwdField, oPwdConfirmField))
             return;
@@ -21,10 +23,16 @@ sap.ui.controller('gashos.dbaas.provider.controller.Register', {
                 "Password": oPwdField.getValue(),
             },
             success: function(oResponse) {
-                console.log(oResponse);
+                sap.m.MessageToast.show("Registration successful!", {
+                    duration: 100,
+                    onClose: function() {
+                        that.backToLogin();
+                    }
+                });
             },
-            error: function() {
-                console.log(arguments);
+            error: function(iStatusCode, oResponse) {
+                var oErrors = oResponse['errors'];
+                ValidationUtils.showErrors(oView, ['Username', 'Password'], oErrors);
             },
         });
     },

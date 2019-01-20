@@ -30,9 +30,13 @@ sap.ui.jsview("gashos.dbaas.provider.view.Login", {
 
     createLoginFormElements: function(oController) {
         return [
-           new sap.m.Label({text: "Username",}), new sap.m.Input({width: "50%", placeholder: "Type username..."}),
-           new sap.m.Label({text: "Password",}), new sap.m.Input({width: "50%", placeholder: "Type password...", type: sap.m.InputType.Password}),
-           new sap.m.Label({}), new sap.m.Button({width: "50%", text: "Login"}),
+            new sap.m.Label({text: "Username",}), new sap.m.Input(this.createId('Username'), {width: "50%", placeholder: "Type username..."}),
+            new sap.m.Label({text: "Password",}), new sap.m.Input(this.createId('Password'), {width: "50%", placeholder: "Type password...", type: sap.m.InputType.Password}),
+            new sap.m.Label({}), new sap.m.Button({
+                width: "50%",
+                text: "Login",
+                press: [oController.loginUser, oController],
+            }),
         ];
     },
 
@@ -48,4 +52,9 @@ sap.ui.jsview("gashos.dbaas.provider.view.Login", {
             ]
         });
     },
+
+    reset: function(bKeepValues) {
+        var aIDs = ['Username', 'Password'];
+        ValidationUtils.resetErrors(this, aIDs, bKeepValues);
+    }
 });

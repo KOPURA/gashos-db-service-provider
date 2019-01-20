@@ -1,3 +1,13 @@
+if (!Object.keys) {
+    Object.keys = function(oObject) {
+        var aKeys = [];
+        $.each(oObject, function(key, value) {
+            aKeys.push(key);
+        });
+        return aKeys;
+    };
+}
+
 if (!Object.ensureExists) {
     Object.ensureExists = function(sPath, sDelimiter) {
         var aComponents = sPath.split(sDelimiter);
@@ -9,6 +19,36 @@ if (!Object.ensureExists) {
     }
 }
 
+window.ValidationUtils = {
+    resetErrors: function(oView, aIds, bKeepValues) {
+        $.each(aIds, function(iIdx, sId) {
+            var oControl = oView.byId(sId);
+            oControl.setValueState(sap.ui.core.ValueState.None);
+            oControl.setValueStateText("");
+            if (!bKeepValues) {
+                oControl.setValue("");
+            }
+        });
+    },
+
+    showErrors: function(oView, aIds, oErrors) {
+        $.each(aIds, function(iIdx, sId) {
+            var aRelevantErrors = oErrors[sId] || [];
+            if (!aRelevantErrors.length)
+                return;
+
+            var sErrorString = aRelevantErrors.join("\n");
+            var oControl = oView.byId(sId);
+            oControl.setValueState(sap.ui.core.ValueState.Error);
+            oControl.setValueStateText(sErrorString);
+        });
+        var aGeneralErrors  = Object.keys(oErrors).map(x => oErrors[x]).filter(x => typeof x === 'string');
+        if (aGeneralErrors.length) {
+            var sGeneralErrorsString = aGeneralErrors.join("\n");
+            sap.m.MessageToast.show(sGeneralErrorsString);
+        }
+    },
+}
 
 window.AJAXUtils = {
     doGET: function(oInput) {

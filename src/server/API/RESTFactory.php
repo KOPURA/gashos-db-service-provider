@@ -41,6 +41,9 @@ class RESTFactory {
             case "register":
                 $handler = self::createFromClass('Register', $request);
                 break;
+            case 'login':
+                $handler = self::createFromClass('Login', $request);
+                break;
         }
         return $handler;
     }
@@ -66,7 +69,7 @@ class RESTFactory {
             include_once "API/".strtoupper($request->getMethod())."/$class.php";
             return new $class($request);
         } catch (Throwable $e) {
-            return self::createServerErrorHandler($e->getMessage());
+            return self::createServerErrorHandler($request, $e->getMessage());
         }
     }
 
@@ -87,10 +90,10 @@ class RESTFactory {
         };
     }
 
-    private static function createServerErrorHandler($error) {
-        return new class($error) extends AbstractRestHandler {
-            public function __construct($error) {
-                parent::__construct(null); # We don't need request object in this handler
+    private static function createServerErrorHandler($request, $error) {
+        return new class($request, $error) extends AbstractRestHandler {
+            public function __construct($request, $error) {
+                parent::__construct($request);
                 $this->addError("Internal server error: $error");
             }
 

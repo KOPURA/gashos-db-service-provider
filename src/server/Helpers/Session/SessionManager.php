@@ -19,6 +19,10 @@ class SessionManager {
     public function isUserLogged(): bool {
         return isset($_SESSION[$SESS_KEY]) && !empty($_SESSION[$SESS_KEY]);
     }
+
+    public function loginUser($userID) {
+        $_SESSION[$SESS_KEY] = $userID;
+    }
 }
 
 

@@ -15,17 +15,18 @@ class Register extends AbstractRestHandler {
         $password = $this->getParam('Password');
 
         $db = DBConnection::getInstance();
-        if ($stmt = $db->prepare("INSERT INTO Users VALUES (?, ?)")) {
-            $stmt->bind_param("ss", $username, $password); 
+        if ($stmt = $db->prepare("INSERT INTO Users (username, password) VALUES (?, ?)")) {
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $stmt->bind_param("ss", $username, $passwordHash);
 
             if ($stmt->execute()) {
                 $this->setResponseCode(201);
             } else {
-                $this->addError(sprintf("DB Error occured (%s): %s", $db->connect_errno, $db->connect_error));
+                $this->addError(sprintf("DB Insert Error occured (%s): %s", $db->connect_errno, $db->connect_error));
                 $this->setResponseCode(500);
             }
         } else {
-            $this->addError("Failed to prepare stmt");
+            $this->addError(sprintf("Failed to prepare insert statement (%s): %s", $db->errno, $db->error));
             $this->setResponseCode(500);
         }
     }
@@ -43,16 +44,24 @@ class Register extends AbstractRestHandler {
         }
 
         $db = DBConnection::getInstance();
-        if ($stmt = $db->prepare("SELECT * FROM Users WHERE username = ?")) {
-            $stmt->bind_param("s", $username);
-            if ($stmt->execute() && $stmt->num_rows() > 0){
-                $this->addError("This username already exists", "Username");
-                return False;
-            }
-
-            return True;
+        $stmt = $db->prepare("SELECT * FROM Users WHERE username=?");
+        if (!$stmt) {
+            $this->addError(sprintf("Failed to prepare select statement (%s): %s", $db->errno, $db->error));
+            return False;
         }
-        return False;
+
+        $stmt->bind_param("s", $username);
+        if (!$stmt->execute()) {
+            $this->addError(sprintf("Failed to execute select statement (%s): %s", $db->errno, $db->error));
+            return False;
+        }
+
+        if ($stmt->get_result()->num_rows > 0){
+            $this->addError("This username already exists", "Username");
+            return False;
+        }
+
+        return True;
     }
 
     protected function checkPassword($password) {

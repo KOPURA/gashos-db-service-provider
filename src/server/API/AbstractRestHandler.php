@@ -61,7 +61,7 @@ abstract class AbstractRestHandler implements IRestHandler {
             $checkerName = "check".$key;
             if (method_exists($this, $checkerName)) {
                 $value = $this->getParam($key);
-                $rc = $this->$checkerName($value) && $rc;
+                $result = $this->$checkerName($value) && $result;
             }
         }
         return $result;
@@ -88,7 +88,6 @@ abstract class AbstractRestHandler implements IRestHandler {
 
     protected function handleValidationError() {
         $this->setResponseCode(400);
-        $this->addError('Failed to validate input data');
     }
 
     protected function processRequest() {

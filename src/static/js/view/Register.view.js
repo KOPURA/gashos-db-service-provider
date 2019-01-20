@@ -29,9 +29,9 @@ sap.ui.jsview("gashos.dbaas.provider.view.Register", {
     },
 
     createRegisterFormElements: function(oController) {
-        this.unameInput = new sap.m.Input(this.createId('uname'), {width: "50%", placeholder: "Type username..."});
-        this.pwdInput = new sap.m.Input(this.createId('pwd'), {width: "50%", placeholder: "Type password...", type: sap.m.InputType.Password})
-        this.pwdConfirmationInput = new sap.m.Input(this.createId('confirm_pwd'), {width: "50%", placeholder: "Type password again...", type: sap.m.InputType.Password})
+        this.unameInput = new sap.m.Input(this.createId('Username'), {width: "50%", placeholder: "Type username..."});
+        this.pwdInput = new sap.m.Input(this.createId('Password'), {width: "50%", placeholder: "Type password...", type: sap.m.InputType.Password})
+        this.pwdConfirmationInput = new sap.m.Input(this.createId('ConfirmPassword'), {width: "50%", placeholder: "Type password again...", type: sap.m.InputType.Password})
         return [
            new sap.m.Label({text: "Username",}), this.unameInput,
            new sap.m.Label({text: "Password",}), this.pwdInput,
@@ -43,16 +43,8 @@ sap.ui.jsview("gashos.dbaas.provider.view.Register", {
         ];
     },
 
-    reset: function() {
-        var aControls = [
-            this.unameInput,
-            this.pwdInput,
-            this.pwdConfirmationInput,
-        ];
-        $.each(aControls, function(iIdx, oControl) {
-            oControl.setValueState(sap.ui.core.ValueState.None);
-            oControl.setValueStateText("");
-            oControl.setValue("");
-        });
+    reset: function(bKeepValues) {
+        var aIDs = ['Username', 'Password', 'ConfirmPassword'];
+        ValidationUtils.resetErrors(this, aIDs, bKeepValues);
     }
 });
