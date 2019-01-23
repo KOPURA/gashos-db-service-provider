@@ -19,6 +19,20 @@ if (!Object.ensureExists) {
     }
 }
 
+if (!JSON.parseWithLogging) {
+    JSON.parseWithLogging = function(sJSONString) {
+        try {
+            return JSON.parse(sJSONString);
+        } catch(e) {
+            var sError = "Invalid JSON string: " + sJSONString;
+            console.error(sError);
+            return {
+                errors: [ sError ],
+            };
+        }
+    }
+}
+
 window.ValidationUtils = {
     fetchGeneralErrors: function(oErrors) {
         return Object.keys(oErrors).map(x => oErrors[x]).filter(x => typeof x === 'string');
@@ -58,13 +72,13 @@ window.AJAXUtils = {
             contentType: 'application/json; charset=UTF-8',
             data: sData,
             success: function(sData) {
-                var oJSON = JSON.parse(sData);
+                var oJSON = JSON.parseWithLogging(sData);
                 fnSuccess(oJSON);
             },
             error: function(oJXR, sTextStatus, sError) {
                 var iStatusCode = oJXR.status;
                 var sResponse = oJXR.responseText;
-                var oJSONResponse = JSON.parse(sResponse);
+                var oJSONResponse = JSON.parseWithLogging(sResponse);
                 fnError(iStatusCode, oJSONResponse);
             },
             complete: fnFinally

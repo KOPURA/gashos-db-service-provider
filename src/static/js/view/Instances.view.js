@@ -18,9 +18,10 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
     },
 
     onNav: function() {
+        var oController = this.getController();
+        oController.startMonitoring();
         // Start the monitoring of the instances;
         // Also, stop it on logout !!!!
-        return 1;
     },
 
     _createHeader: function(oController) {

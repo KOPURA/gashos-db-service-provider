@@ -27,7 +27,7 @@
                 oControl.setValueStateText(sErrorString);
             }.bind(this));
 
-            var aGeneralErrors  = ValidationUtils.fetchGeneralErrors(oErrors);
+            var aGeneralErrors = ValidationUtils.fetchGeneralErrors(oErrors);
             if (aGeneralErrors.length) {
                 var sGeneralErrorsString = aGeneralErrors.join("\n");
                 sap.m.MessageToast.show(sGeneralErrorsString);
