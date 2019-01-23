@@ -20,34 +20,9 @@ if (!Object.ensureExists) {
 }
 
 window.ValidationUtils = {
-    resetErrors: function(oView, aIds, bKeepValues) {
-        $.each(aIds, function(iIdx, sId) {
-            var oControl = oView.byId(sId);
-            oControl.setValueState(sap.ui.core.ValueState.None);
-            oControl.setValueStateText("");
-            if (!bKeepValues) {
-                oControl.setValue("");
-            }
-        });
-    },
-
-    showErrors: function(oView, aIds, oErrors) {
-        $.each(aIds, function(iIdx, sId) {
-            var aRelevantErrors = oErrors[sId] || [];
-            if (!aRelevantErrors.length)
-                return;
-
-            var sErrorString = aRelevantErrors.join("\n");
-            var oControl = oView.byId(sId);
-            oControl.setValueState(sap.ui.core.ValueState.Error);
-            oControl.setValueStateText(sErrorString);
-        });
-        var aGeneralErrors  = Object.keys(oErrors).map(x => oErrors[x]).filter(x => typeof x === 'string');
-        if (aGeneralErrors.length) {
-            var sGeneralErrorsString = aGeneralErrors.join("\n");
-            sap.m.MessageToast.show(sGeneralErrorsString);
-        }
-    },
+    fetchGeneralErrors: function(oErrors) {
+        return Object.keys(oErrors).map(x => oErrors[x]).filter(x => typeof x === 'string');
+    }
 }
 
 window.AJAXUtils = {
@@ -59,9 +34,13 @@ window.AJAXUtils = {
         this._request('POST', oInput);
     },
 
+    doDELETE: function(oInput) {
+        this._request('DELETE', oInput);
+    },
+
     _request: function(sMethod, oInput) {
         var fnSuccess = (typeof oInput.success === 'function') ? oInput.success : function() {}
-        var fnError   = (typeof oInput.error === 'function') ? oInput.error : function() {}
+        var fnError   = (typeof oInput.error === 'function')   ? oInput.error : function() {}
         var fnFinally = (typeof oInput.finally === 'function') ? oInput.finally : function() {}
         var bIsAsync  = oInput.async || true;
         var sURL      = oInput.url;

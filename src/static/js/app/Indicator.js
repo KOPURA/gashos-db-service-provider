@@ -14,7 +14,8 @@
                     oCurrentBusyDialog = undefined;
                 }
             },
-            showError: function(sErrorText) {
+            showError: function(sErrorText, fnOnClose) {
+                fnOnClose = fnOnClose || function() {};
                 var oDialog = new sap.m.Dialog({
                     title: 'Error',
                     type: sap.m.DialogType.Message,
@@ -30,6 +31,7 @@
                     }),
                     afterClose: function(oEvent) {
                         oEvent.getSource().destroy();
+                        fnOnClose();
                     }
                 });
                 oDialog.open();

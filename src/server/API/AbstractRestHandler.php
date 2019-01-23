@@ -18,10 +18,6 @@ abstract class AbstractRestHandler implements IRestHandler {
         $this->errors = array();
     }
 
-    public function requiresAuthentication(): bool {
-        return false;
-    }
-
     public function respond(): Response {
         $isUserLogged = SessionManager::getInstance()->isUserLogged();
         if ($this->requiresAuthentication() && !$isUserLogged) {
@@ -34,8 +30,20 @@ abstract class AbstractRestHandler implements IRestHandler {
 
         $responseCode    = $this->getResponseCode();
         $responseHeaders = $this->getResponseHeaders();
-        $responseBody    = json_encode($this->getResponseObject());
+        $responseBody    = $this->getResponseBody();
         return new Response($responseCode, $responseHeaders, $responseBody); 
+    }
+
+# The buffering might be useful if the handler should return a response
+# But continue to process other stuff after that
+    public function requiresBuffering(): bool {
+        return false;
+    }
+
+# If the handler requires buffering, the postProcess method is called after the response
+# has been already sent
+    public function postProcess() {
+        return true;
     }
 
 # ---------------- Protected Methods --------------------------------------
@@ -44,8 +52,14 @@ abstract class AbstractRestHandler implements IRestHandler {
     protected abstract function process();
 
 # Each handler defines how a given parameter is being retrieved
-    protected abstract function getParam($key);
+    protected function getParam($key) {
+        return null;
+    }
 
+# Each handler defines whether it requires that the user has logged in
+    protected function requiresAuthentication(): bool {
+        return false;
+    }
 
     protected function getParamKeys() {
         return [];
@@ -79,6 +93,10 @@ abstract class AbstractRestHandler implements IRestHandler {
     protected function isSuccess(): bool {
         $responseCode = $this->getResponseCode();
         return $responseCode >= 200 && $responseCode < 300;
+    }
+
+    protected function getResponseBody() {
+        return json_encode($this->getResponseObject());
     }
 
     protected function handleUnauthenticatedRequest() {

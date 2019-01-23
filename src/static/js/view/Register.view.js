@@ -1,4 +1,4 @@
-sap.ui.jsview("gashos.dbaas.provider.view.Register", {
+gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Register", {
     
     getControllerName : function () {
         return "gashos.dbaas.provider.controller.Register";
@@ -43,8 +43,11 @@ sap.ui.jsview("gashos.dbaas.provider.view.Register", {
         ];
     },
 
-    reset: function(bKeepValues) {
-        var aIDs = ['Username', 'Password', 'ConfirmPassword'];
-        ValidationUtils.resetErrors(this, aIDs, bKeepValues);
+    getParamKeys: function() {
+        return ['Username', 'Password', 'ConfirmPassword'];;
+    },
+
+    getBusyText: function() {
+        return "Registering...";
     }
 });

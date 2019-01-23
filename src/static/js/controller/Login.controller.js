@@ -12,18 +12,24 @@ sap.ui.controller('gashos.dbaas.provider.controller.Login', {
         var oPwdField   = oView.byId('Password');
         oView.reset(true);
 
+        gashos.dbaas.provider.getIndicator().setBusy(true, oView.getBusyText());
         AJAXUtils.doPOST({
-            url: "api/api.php?action=login",
+            url: "api/user/",
             data: {
                 "Username": oUnameField.getValue(),
                 "Password": oPwdField.getValue(),
             },
             success: function(oResponse) {
-                sap.m.MessageToast.show("Login successful!");
+                jQuery.sap.delayedCall(500, this, function() {
+                    window.app.to("InstancesView");
+                    gashos.dbaas.provider.getIndicator().setBusy(false);
+                });
             },
             error: function(iStatusCode, oResponse) {
-                var oErrors = oResponse['errors'];
-                ValidationUtils.showErrors(oView, ['Username', 'Password'], oErrors);
+                jQuery.sap.delayedCall(500, this, function() {
+                    oView.showErrors(oResponse['errors']);
+                    gashos.dbaas.provider.getIndicator().setBusy(false);
+                });
             },
         });
     },

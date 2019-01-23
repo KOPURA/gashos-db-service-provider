@@ -1,4 +1,4 @@
-sap.ui.jsview("gashos.dbaas.provider.view.Login", {
+gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Login", {
     
     getControllerName : function () {
         return "gashos.dbaas.provider.controller.Login";
@@ -35,6 +35,7 @@ sap.ui.jsview("gashos.dbaas.provider.view.Login", {
             new sap.m.Label({}), new sap.m.Button({
                 width: "50%",
                 text: "Login",
+                icon: "sap-icon://visits",
                 press: [oController.loginUser, oController],
             }),
         ];
@@ -47,14 +48,14 @@ sap.ui.jsview("gashos.dbaas.provider.view.Login", {
                 new sap.m.Button({
                     text: "Create account",
                     type: sap.m.ButtonType.Emphasized,
+                    icon: "sap-icon://add-employee",
                     press: [oController.toRegister, oController],
                 }),
             ]
         });
     },
 
-    reset: function(bKeepValues) {
-        var aIDs = ['Username', 'Password'];
-        ValidationUtils.resetErrors(this, aIDs, bKeepValues);
-    }
+    getParamKeys: function() {
+        return ['Username', 'Password'];;
+    },
 });

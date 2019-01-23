@@ -13,11 +13,9 @@ class RESTFactory {
             case 'POST':
                 $handler = self::createPOSTHandler($request);
                 break;
-            case 'PUT':
-                $handler = self::createPUTHandler($request);
-                break;
             case 'DELETE':
                 $handler = self::createDELETEHandler($request);
+                break;
         }
 
         if ($handler == null) {
@@ -29,38 +27,34 @@ class RESTFactory {
 
     private static function createGETHandler($request) {
         $handler = null;
-        // switch($request->getAction()) {
-
-        // }
+        switch($request->getAction()) {
+            case "instances":
+                $handler = self::createFromClass("GetInstances", $request);
+                break;
+        }
         return $handler;
     }
 
     private static function createPOSTHandler($request) {
         $handler = null;
         switch($request->getAction()) {
-            case "register":
+            case "users":
                 $handler = self::createFromClass('Register', $request);
                 break;
-            case 'login':
+            case 'user':
                 $handler = self::createFromClass('Login', $request);
                 break;
         }
         return $handler;
     }
 
-    private static function createPUTHandler($request) {
-        $handler = null;
-        // switch($request->getAction()) {
-
-        // }
-        return $handler;
-    }
-
     private static function createDELETEHandler($request) {
         $handler = null;
-        // switch($request->getAction()) {
-
-        // }
+        switch($request->getAction()) {
+            case 'user':
+                $handler = self::createFromClass('Logout', $request);
+                break;
+        }
         return $handler;
     }
 
@@ -85,8 +79,6 @@ class RESTFactory {
             }
 
             public function process() { $this->setResponseCode(404); }
-
-            public function getParam($key) { return null; }
         };
     }
 
@@ -98,8 +90,6 @@ class RESTFactory {
             }
 
             public function process() { $this->setResponseCode(500); }
-
-            public function getParam($key) { return null; }
         };
     }
 }

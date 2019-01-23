@@ -16,8 +16,9 @@ sap.ui.controller('gashos.dbaas.provider.controller.Register', {
         if (!this.passwordsMatch(oPwdField, oPwdConfirmField))
             return;
 
+        gashos.dbaas.provider.getIndicator().setBusy(true, oView.getBusyText());
         AJAXUtils.doPOST({
-            url: "api/api.php?action=register",
+            url: "api/users/",
             data: {
                 "Username": oUnameField.getValue(),
                 "Password": oPwdField.getValue(),
@@ -31,9 +32,13 @@ sap.ui.controller('gashos.dbaas.provider.controller.Register', {
                 });
             },
             error: function(iStatusCode, oResponse) {
-                var oErrors = oResponse['errors'];
-                ValidationUtils.showErrors(oView, ['Username', 'Password'], oErrors);
+                oView.showErrors(oResponse['errors']);
             },
+            finally: function() {
+                jQuery.sap.delayedCall(500, this, function() {
+                    gashos.dbaas.provider.getIndicator().setBusy(false);
+                });
+            }
         });
     },
 
