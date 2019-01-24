@@ -110,4 +110,17 @@ window.FormatterUtils = {
             return sap.ui.core.IconColor.Neutral;
         }
     },
+
+    getTooltipByStatus: function(sStatus, sError) {
+        if (sStatus === 'Running') {
+            return 'Instance running';
+        } else if (sStatus === 'Initializing') {
+            return 'Instance is being created';
+        } else if (sStatus === 'Error') {
+            return 'Instance couldn\' be created: ' + sError;
+        } else {
+            return '';
+        }
+
+    }
 }

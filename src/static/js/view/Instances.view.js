@@ -120,6 +120,7 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
             new sap.ui.core.Icon({
                 src: FormatterUtils.getIconByStatus(sStatus),
                 color: FormatterUtils.getIconColorByStatus(sStatus),
+                tooltip: FormatterUtils.getTooltipByStatus(sStatus, oRow.ERROR),
             }),
             new sap.m.Text({text: oRow.PUBLIC_DNS}),
             new sap.m.Text({text: oRow.DB_NAME}),
