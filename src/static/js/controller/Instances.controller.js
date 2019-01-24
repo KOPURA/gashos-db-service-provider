@@ -39,8 +39,8 @@ sap.ui.controller('gashos.dbaas.provider.controller.Instances', {
             content: this._createDialogContent(),
             title: "Choose database instance settings",
             icon: "sap-icon://action-settings",
-            contentWidth: "640px",
-            contentHeight: "200px",
+            contentWidth: "650px",
+            contentHeight: "260px",
             beginButton: new sap.m.Button({
                 text: "Create",
                 type: sap.m.ButtonType.Accept,
@@ -78,18 +78,22 @@ sap.ui.controller('gashos.dbaas.provider.controller.Instances', {
         var aValidDBTypes = [{key: 'mysql', text: "MySQL Database"}];
         var aValidTypeSelections = aValidDBTypes.map(x => new sap.ui.core.Item(x));
         return [
-            new sap.m.Label({text: "Database Type"}), new sap.m.Select("DBType", {items: aValidTypeSelections}),
+            new sap.m.Label({text: "Database Type"}), new sap.m.Select("DBType", { width: "70%", items: aValidTypeSelections}),
+            new sap.m.Label({text: "DB Admin Username"}), new sap.m.Input("DBUser", { width: "70%", placeholder: "Type DB Admin Username..." }),
+            new sap.m.Label({text: "DB Admin Password"}), new sap.m.Input("DBPassword", { width: "70%", placeholder: "Type DB Admin Password...", type: sap.m.InputType.Password }),
+            new sap.m.Label({text: "Database Name"}),     new sap.m.Input("DBName", { width: "70%", placeholder: "Type database name..."}),
         ];
     },
 
     _createInstance: function(oDialog) {
         var oView = this.getView();
-        var oTypeSelect = sap.ui.getCore().byId("DBType");
-        var sDBType = oTypeSelect.getSelectedItem().getKey();
         AJAXUtils.doPOST({
             url: "api/instances/",
             data: {
-                DBType: sDBType,
+                DBType: sap.ui.getCore().byId("DBType").getSelectedItem().getKey(),
+                DBUser: sap.ui.getCore().byId("DBUser").getValue(),
+                DBPassword: sap.ui.getCore().byId("DBPassword").getValue(),
+                DBName: sap.ui.getCore().byId("DBName").getValue(),
             },
             success: function() {
                 oDialog.close();

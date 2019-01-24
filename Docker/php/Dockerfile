@@ -11,6 +11,11 @@ RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 # Install AWS SDK
 RUN apt-get update
 RUN apt-get install unzip # So that we can unzip the AWS SDK kit
+RUN apt-get --assume-yes install ssh
+
+RUN mkdir -p /var/tmp/keys
+RUN chmod 0777 /var/tmp/keys
+ENV SSH_LOCATION /var/tmp/keys
 
 RUN curl "https://docs.aws.amazon.com/aws-sdk-php/v3/download/aws.zip" > /var/tmp/aws.zip && \
     mkdir /usr/local/lib/php/AWS                                                          && \

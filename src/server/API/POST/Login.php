@@ -4,7 +4,7 @@ include "Traits/PasswordValidator.php";
 include "Helpers/DB/DBConnection.php";
 
 class Login extends AbstractRestHandler {
-    use passwordValidator;
+    use PasswordValidator;
 
     private $userInfo = null;
 

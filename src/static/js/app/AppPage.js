@@ -35,6 +35,8 @@
         },
 
         reset: function(bKeepValues) {
+            this.setModel(new sap.ui.model.json.JSONModel({}));
+
             var aIds = this.getParamKeys();
             $.each(aIds, function(iIdx, sId) {
                 var oControl = this.byId(sId);

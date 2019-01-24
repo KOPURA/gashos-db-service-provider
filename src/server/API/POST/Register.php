@@ -4,7 +4,7 @@ include "Traits/PasswordValidator.php";
 include "Helpers/DB/DBConnection.php";
 
 class Register extends AbstractRestHandler {
-    use passwordValidator;
+    use PasswordValidator;
 
     protected function getParamKeys() {
         return ['Username', 'Password'];

@@ -5,11 +5,10 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
     },
     
     createContent : function(oController) {
+        var oTable = this._createInstancesTable();
         var oPage = new sap.m.Page({
             title: "Database Instances",
-            content: [
-
-            ],
+            content: [oTable],
             headerContent: this._createHeader(oController),
             footer: this._createFooter(oController),
         });
@@ -18,8 +17,8 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
     },
 
     onNav: function() {
-        var oController = this.getController();
-        oController.startMonitoring();
+        gashos.dbaas.provider.app.AppPage.prototype.onNav.apply(this);
+        this.getController().startMonitoring();
         // Start the monitoring of the instances;
         // Also, stop it on logout !!!!
     },
@@ -44,5 +43,88 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
                 }),
             ],
         });
+    },
+
+    _createInstancesTable: function() {
+        var aColumns = [
+            new sap.m.Column({
+                width: '22%',
+                hAlign: sap.ui.core.TextAlign.Begin,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+                header: new sap.m.Text({
+                    text: 'Instance ID',
+                }),
+            }),
+            new sap.m.Column({
+                header: new sap.m.Text({
+                    text: 'Status',
+                }),
+                width: '10%',
+                hAlign: sap.ui.core.TextAlign.Center,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+            }),
+            new sap.m.Column({
+                header: new sap.m.Text({
+                    text: 'Hostname',
+                }),
+                width: '35%',
+                hAlign: sap.ui.core.TextAlign.Begin,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+            }),
+            new sap.m.Column({
+                header: new sap.m.Text({
+                    text: 'Database name',
+                }),
+                width: '12%',
+                hAlign: sap.ui.core.TextAlign.Begin,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+            }),
+            new sap.m.Column({
+                header: new sap.m.Text({
+                    text: 'Database User',
+                }),
+                width: '12%',
+                hAlign: sap.ui.core.TextAlign.Begin,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+            }),
+            new sap.m.Column({
+                header: new sap.m.Text({
+                    text: 'Create Time',
+                }),
+                width: '9%',
+                hAlign: sap.ui.core.TextAlign.Begin,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+            }),
+        ];
+        var oTable = new sap.m.Table({
+            noDataText: "There are no instances",
+            columns: aColumns,
+            items: {
+                path: "/instances",
+                factory: this._createItems.bind(this),
+            }
+        });
+        return oTable;
+    },
+
+    _createItems: function(sID, oContext) {
+        return new sap.m.ColumnListItem({
+            cells: this._createCells(oContext.getObject()),
+        });
+    },
+
+    _createCells: function(oRow) {
+        var sStatus = oRow.STATUS;
+        return [
+            new sap.m.Text({text: oRow.INSTANCE_ID}),
+            new sap.ui.core.Icon({
+                src: FormatterUtils.getIconByStatus(sStatus),
+                color: FormatterUtils.getIconColorByStatus(sStatus),
+            }),
+            new sap.m.Text({text: oRow.PUBLIC_DNS}),
+            new sap.m.Text({text: oRow.DB_NAME}),
+            new sap.m.Text({text: oRow.DB_USER}),
+            new sap.m.Text({text: oRow.CREATE_TIME}),
+        ];
     },
 });

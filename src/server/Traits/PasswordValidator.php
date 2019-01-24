@@ -1,8 +1,8 @@
 <?php
 
-trait passwordValidator {
+trait PasswordValidator {
 
-    function validatePassword($password, $passwordKey) {
+    function validatePassword($password, $passwordKey=null) {
         if (strlen($password) < 8) {
             $this->addError("Password must be at least 8 characters long", $passwordKey);
             return 0;

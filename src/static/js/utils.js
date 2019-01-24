@@ -85,3 +85,29 @@ window.AJAXUtils = {
         });
     }
 };
+
+window.FormatterUtils = {
+    getIconByStatus: function(sStatus) {
+        if (sStatus === 'Running') {
+            return 'sap-icon://message-success';
+        } else if (sStatus === 'Initializing') {
+            return 'sap-icon://pending';
+        } else if (sStatus === 'Error') {
+            return 'sap-icon://status-error';
+        } else {
+            return 'sap-icon://question-mark';
+        }
+    },
+
+    getIconColorByStatus: function(sStatus) {
+        if (sStatus === 'Running') {
+            return sap.ui.core.IconColor.Positive;
+        } else if (sStatus === 'Initializing') {
+            return sap.ui.core.IconColor.Critical;
+        } else if (sStatus === 'Error') {
+            return sap.ui.core.IconColor.Negative;
+        } else {
+            return sap.ui.core.IconColor.Neutral;
+        }
+    },
+}
