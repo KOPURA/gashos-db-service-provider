@@ -128,5 +128,9 @@ window.FormatterUtils = {
             return '';
         }
 
+    },
+
+    canDeleteInstance: function(sStatus) {
+        return sStatus === 'Running';
     }
 }

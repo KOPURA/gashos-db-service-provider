@@ -134,6 +134,7 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
             new sap.m.Text({text: oRow.CREATE_TIME}),
             new sap.m.Button({
                 text: "Delete",
+                enabled: FormatterUtils.canDeleteInstance(sStatus),
                 press: [oController.deleteInstance, oController],
             })
         ];
