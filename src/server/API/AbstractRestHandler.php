@@ -46,6 +46,11 @@ abstract class AbstractRestHandler implements IRestHandler {
         return true;
     }
 
+    public function isSuccess(): bool {
+        $responseCode = $this->getResponseCode();
+        return $responseCode >= 200 && $responseCode < 300;
+    }
+
 # ---------------- Protected Methods --------------------------------------
 
 # Each handler defines what its behaviour will be
@@ -88,11 +93,6 @@ abstract class AbstractRestHandler implements IRestHandler {
             );
         }
         return $this->getResponseResult();
-    }
-
-    protected function isSuccess(): bool {
-        $responseCode = $this->getResponseCode();
-        return $responseCode >= 200 && $responseCode < 300;
     }
 
     protected function getResponseBody() {
