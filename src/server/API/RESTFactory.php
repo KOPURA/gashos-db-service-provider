@@ -57,6 +57,9 @@ class RESTFactory {
             case 'user':
                 $handler = self::createFromClass('Logout', $request);
                 break;
+            case 'instances':
+                $handler = self::createFromClass('DeleteInstances', $request);
+                break;
         }
         return $handler;
     }

@@ -94,6 +94,8 @@ window.FormatterUtils = {
             return 'sap-icon://pending';
         } else if (sStatus === 'Error') {
             return 'sap-icon://status-error';
+        } else if (sStatus === 'Stopping') {
+            return 'sap-icon://stop';
         } else {
             return 'sap-icon://question-mark';
         }
@@ -106,6 +108,8 @@ window.FormatterUtils = {
             return sap.ui.core.IconColor.Critical;
         } else if (sStatus === 'Error') {
             return sap.ui.core.IconColor.Negative;
+        } else if (sStatus === 'Stopping') {
+            return sap.ui.core.IconColor.Critical;
         } else {
             return sap.ui.core.IconColor.Neutral;
         }
@@ -118,6 +122,8 @@ window.FormatterUtils = {
             return 'Instance is being created';
         } else if (sStatus === 'Error') {
             return 'Instance couldn\' be created: ' + sError;
+        } else if (sStatus === 'Stopping') {
+            return 'Instance is being terminated';
         } else {
             return '';
         }

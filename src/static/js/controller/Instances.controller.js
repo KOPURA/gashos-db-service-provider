@@ -121,4 +121,16 @@ sap.ui.controller('gashos.dbaas.provider.controller.Instances', {
         this.intervalId = oInterval;
     },
 
+    deleteInstance: function(oEvt) {
+        var oModel = this.getView().getModel();
+        var oBindingContext = oEvt.getSource().getBindingContext()
+        var sPath = oBindingContext.getPath();
+        var sInstanceID = oModel.getProperty(sPath).INSTANCE_ID;
+        AJAXUtils.doDELETE({
+            url: 'api/instances/' + sInstanceID + '/',
+            error: function(iStatusCode, oResponse) {
+                console.log(oResponse);
+            },
+        });
+    },
 });

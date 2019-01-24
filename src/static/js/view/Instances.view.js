@@ -67,7 +67,7 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
                 header: new sap.m.Text({
                     text: 'Hostname',
                 }),
-                width: '35%',
+                width: '32%',
                 hAlign: sap.ui.core.TextAlign.Begin,
                 vAlign: sap.ui.core.VerticalAlign.Middle,
             }),
@@ -75,24 +75,29 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
                 header: new sap.m.Text({
                     text: 'Database name',
                 }),
-                width: '12%',
-                hAlign: sap.ui.core.TextAlign.Begin,
+                width: '10%',
+                hAlign: sap.ui.core.TextAlign.Center,
                 vAlign: sap.ui.core.VerticalAlign.Middle,
             }),
             new sap.m.Column({
                 header: new sap.m.Text({
                     text: 'Database User',
                 }),
-                width: '12%',
-                hAlign: sap.ui.core.TextAlign.Begin,
+                width: '10%',
+                hAlign: sap.ui.core.TextAlign.Center,
                 vAlign: sap.ui.core.VerticalAlign.Middle,
             }),
             new sap.m.Column({
                 header: new sap.m.Text({
                     text: 'Create Time',
                 }),
-                width: '9%',
-                hAlign: sap.ui.core.TextAlign.Begin,
+                width: '8%',
+                hAlign: sap.ui.core.TextAlign.Center,
+                vAlign: sap.ui.core.VerticalAlign.Middle,
+            }),
+            new sap.m.Column({
+                width: '8%',
+                hAlign: sap.ui.core.TextAlign.Center,
                 vAlign: sap.ui.core.VerticalAlign.Middle,
             }),
         ];
@@ -114,6 +119,7 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
     },
 
     _createCells: function(oRow) {
+        var oController = this.getController();
         var sStatus = oRow.STATUS;
         return [
             new sap.m.Text({text: oRow.INSTANCE_ID}),
@@ -126,6 +132,10 @@ gashos.dbaas.provider.app.page("gashos.dbaas.provider.view.Instances", {
             new sap.m.Text({text: oRow.DB_NAME}),
             new sap.m.Text({text: oRow.DB_USER}),
             new sap.m.Text({text: oRow.CREATE_TIME}),
+            new sap.m.Button({
+                text: "Delete",
+                press: [oController.deleteInstance, oController],
+            })
         ];
     },
 });

@@ -3,6 +3,7 @@
 include "Helpers/DB/DBConnection.php";
 include "Helpers/RemoteExecutor.php";
 include "Traits/PasswordValidator.php";
+include 'Traits/RecordUpdater.php';
 include "AWS/aws-autoloader.php";
 
 use Aws\Ec2\Ec2Client;
@@ -13,6 +14,7 @@ const STATUS_ERROR      = "Error";
 
 class CreateInstance extends AbstractRestHandler {
     use PasswordValidator;
+    use RecordUpdater;
 
     protected function requiresAuthentication(): bool {
         return true;
@@ -23,7 +25,6 @@ class CreateInstance extends AbstractRestHandler {
     }
 
     protected function process() {
-        #$this->postProcess();
         $this->setResponseCode(201);
     }
 
@@ -31,7 +32,7 @@ class CreateInstance extends AbstractRestHandler {
         return ['DBType', 'DBUser', 'DBPassword', 'DBName'];
     }
 
-    protected function getParam($key) {        
+    protected function getParam($key) {
         $request = $this->getRequest();
         $payload = $request->getJSONPayload();
         return $payload->{$key};
@@ -85,30 +86,6 @@ class CreateInstance extends AbstractRestHandler {
                 'STATUS'            => $status
             ));
         }
-    }
-
-    private function updateRecord($instanceID, $valuesMapping, $withErrorHandling = true) {
-        $dbConn = DBConnection::getInstance();
-        $kvPairs = [];
-        foreach ($valuesMapping as $key => $value) {
-            $escaped = $dbConn->real_escape_string($value);
-            array_push($kvPairs, "`$key` = '$escaped'");
-        }
-        $kvPairsString = join(', ', $kvPairs);
-        if (!$dbConn->query("UPDATE `Instances` SET $kvPairsString WHERE `INSTANCE_ID` = '$instanceID'") && $withErrorHandling) {
-            $this->setStatusError($instanceID, $dbConn->error);
-        }
-    }
-
-    private function setStatusError($instanceID, $error) {
-        $dbConn = DBConnection::getInstance();
-        $userID = SessionManager::getInstance()->getUserID();
-        $status = STATUS_ERROR;
-
-        $this->updateRecord($instanceID, array(
-            'STATUS' => $status,
-            'ERROR'  => $error
-        ), false); # Avoid infinite recursion
     }
 
     private function setStatusInit($instanceID) {
